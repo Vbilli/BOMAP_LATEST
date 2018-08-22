@@ -1,5 +1,10 @@
 ﻿$(document).ready(function ()
 {
+    hljs.configure({ useBR: true });
+    $('pre code').each(function (i, block) {
+        hljs.highlightBlock(block);
+    });
+
 	var content = $.ajax({ url: "/Home/GetAllEntityName", async: false });
 
 	var jsonObj = eval('(' + content.responseText + ')');
@@ -87,21 +92,41 @@
 		{
 			var entityName = $('#Search')[0].value;
 			GetEntityByName(entityName);
-
+			//drawCode(entityName);
 		}
 	});
 
-	function GetEntityByName(name)
+	function GetEntityByName(name) {
+	    $.ajax({
+	        url: "/Home/SearchResult",
+	        data: { name: name },
+	        async: false,
+	        success: function (data) {
+	            $("#TableContent").html(data);
+	            hljs.configure({ useBR: true });
+	            //hljs.configure({ useBR: true });
+	            $('div.code').each(function (i, block) {
+	                hljs.highlightBlock(block);
+	            });
+	        }
+	    });
+	};
+
+	function drawCode(name)
 	{
-		$.ajax({
-			url: "/Home/SearchResult",
-			data: { name: name },
-			async: false,
-			success: function (data)
-			{
-				$("#TableContent").html(data);
-			}
-		});
+	    $.ajax({
+	        url: "/Home/returnXmlString",
+	        data: { name: name },
+	        async: false,
+	        success: function (data) {
+	            $("#codeBlock")[0].innerHTML=data;
+	            hljs.configure({ useBR: true });
+	            $('div.code').each(function (i, block) {
+	                hljs.highlightBlock(block);
+	            });
+	        }
+	    });
+
 	}
 
 });

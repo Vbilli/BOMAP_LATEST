@@ -25,7 +25,8 @@ namespace WebApplication1
 
 			bundles.Add(new StyleBundle("~/Content/css").Include(
 					  "~/Content/bootstrap.css",
-					  "~/Content/site.css"));
+                      "~/content/atom-one-dark.css",
+                      "~/Content/site.css"));
 		}
 	}
 }

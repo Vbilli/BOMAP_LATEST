@@ -28,7 +28,7 @@ namespace WebApplication1.Controllers
 		{
 			IList<string> entityList = new List<string>();
 			XmlDocument xml = new XmlDocument();
-			xml.Load(@"C:\SVN\Framework\Branches\Staging\CodeSmithTemplates\BOLTemplates\AT_BOL_Map.xml");
+			xml.Load(@"D:\MyDownloads\AT_BOL_Map.xml");
 			XmlNodeList entities = xml.GetElementsByTagName("Entity");
 			XmlNodeList entitiesNode = entities;
 			EntityCollection entityCollections = new EntityCollection();
@@ -72,8 +72,18 @@ namespace WebApplication1.Controllers
 		public ActionResult SearchResult(string name)
 		{
 			var result = Entities.EntityList.Entities.Where(o => o.Name == name).FirstOrDefault();
-			return this.PartialView("SearchResult", result);
+            result.XmlString = result.XmlString.Replace("><", ">\r\n<");
+
+            return this.PartialView("SearchResult", result);
 			//return RedirectToAction("ShowEntity");
 		}
-	}
+
+        public string returnXmlString(string name)
+        {
+            var result = Entities.EntityList.Entities.Where(o => o.Name == name).FirstOrDefault();
+            string resultStringWithoutNewLine = result.XmlString;
+            return resultStringWithoutNewLine.Replace("</","/br</");
+            //return RedirectToAction("ShowEntity");
+        }
+    }
 }
