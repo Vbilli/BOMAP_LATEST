@@ -1,9 +1,9 @@
 ﻿$(document).ready(function ()
 {
-    hljs.configure({ useBR: true });
-    $('pre code').each(function (i, block) {
-        hljs.highlightBlock(block);
-    });
+	//hljs.configure({ useBR: true });
+	//$('pre code').each(function (i, block) {
+	//    hljs.highlightBlock(block);
+	//});
 
 	var content = $.ajax({ url: "/Home/GetAllEntityName", async: false });
 
@@ -96,37 +96,22 @@
 		}
 	});
 
-	function GetEntityByName(name) {
-	    $.ajax({
-	        url: "/Home/SearchResult",
-	        data: { name: name },
-	        async: false,
-	        success: function (data) {
-	            $("#TableContent").html(data);
-	            hljs.configure({ useBR: true });
-	            //hljs.configure({ useBR: true });
-	            $('div.code').each(function (i, block) {
-	                hljs.highlightBlock(block);
-	            });
-	        }
-	    });
-	};
-
-	function drawCode(name)
+	function GetEntityByName(name)
 	{
-	    $.ajax({
-	        url: "/Home/returnXmlString",
-	        data: { name: name },
-	        async: false,
-	        success: function (data) {
-	            $("#codeBlock")[0].innerHTML=data;
-	            hljs.configure({ useBR: true });
-	            $('div.code').each(function (i, block) {
-	                hljs.highlightBlock(block);
-	            });
-	        }
-	    });
-
-	}
-
+		$.ajax({
+			url: "/Home/SearchResult",
+			data: { name: name },
+			async: false,
+			success: function (data)
+			{
+				$("#TableContent").html(data);
+				hljs.configure({ useBR: false });
+				//hljs.configure({ useBR: true });
+				$('pre code').each(function (i, block)
+				{
+					hljs.highlightBlock(block);
+				});
+			}
+		});
+	};
 });
