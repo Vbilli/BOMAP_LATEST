@@ -8,14 +8,23 @@ using System.Xml;
 using Newtonsoft.Json;
 using WebApplication1.Models;
 using static WebApplication1.Models.Entity;
+using System.Configuration;
 
 namespace WebApplication1.Controllers
 {
 	public class HomeController : Controller
 	{
-		public ActionResult Index()
+        private static string _xmlPath;
+
+
+        public ActionResult Index()
 		{
-			return View(new Entity());
+            string xmlPath  = ConfigurationManager.AppSettings["XmlPath"];
+            if(!string.IsNullOrEmpty(xmlPath))
+            {
+                _xmlPath = xmlPath;
+            }
+            return View(new Entity());
 		}
 
 		public ActionResult ShowEntity(string name)
@@ -28,7 +37,7 @@ namespace WebApplication1.Controllers
 		{
 			IList<string> entityList = new List<string>();
 			XmlDocument xml = new XmlDocument();
-			xml.Load(@"C:\SVN\Framework\Branches\Staging\CodeSmithTemplates\BOLTemplates\AT_BOL_Map.xml");
+			xml.Load(_xmlPath);
 			XmlNodeList entities = xml.GetElementsByTagName("Entity");
 			XmlNodeList entitiesNode = entities;
 			EntityCollection entityCollections = new EntityCollection();

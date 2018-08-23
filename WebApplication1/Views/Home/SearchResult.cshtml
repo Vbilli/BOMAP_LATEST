@@ -1,15 +1,14 @@
 ﻿@model WebApplication1.Models.Entity
-<table class="table">
+@*<table class="table">
     <thead>
         <tr>
-            @*@if (Model.Fields != null && Model.Fields.Count > 0)
+            @if (Model.Fields != null && Model.Fields.Count > 0)
             {
-
                 foreach (var field in Model.EntityChildAttributeList)
                 {
                     <th scope="col">@field</th>
                 }
-            }*@
+            }
         </tr>
     </thead>
     <tbody>
@@ -36,7 +35,7 @@
             <td>twitter</td>
         </tr>
     </tbody>
-</table>
+</table>*@
 
 @if (Model.Fields != null && Model.Fields.Count > 0)
 {

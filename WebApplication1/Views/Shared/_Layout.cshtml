@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <title>@ViewBag.Title</title>
         @Styles.Render("~/Content/css")
     <link href="~/Content/atom-one-dark.css" rel="stylesheet" />
 	<script src="~/Scripts/jquery-3.3.1.min.js"></script>
@@ -12,27 +12,17 @@
 	<script src="~/Scripts/typeahead.jquery.min.js"></script>
 	<script src="~/Scripts/typeahead.bundle.min.js"></script>
 	<script src="~/Scripts/bloodhound.js"></script>
-	<link href="~/Content/Home.css" rel="stylesheet" />
+    <link href="~/Content/TypeAhead.css" rel="stylesheet" />
+	@*<link href="~/Content/Home.css" rel="stylesheet" />*@
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                @Html.ActionLink("Finder", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
-            </div>
-            @*<div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("About", "About", "Home")</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
-                </ul>
-                @Html.Partial("_LoginPartial")
-            </div>*@
+    <div class="navbar navbar-light bg-light justify-content-between" id="multiple-datasets">
+        <a class="navbar-brand">Finder</a>
+        @*<form class="form-inline">*@
+        <div class="form-inline">
+            <input class="form-control mr-sm-2 typeahead" id="Search" type="search" placeholder="Search" aria-label="Search">
+            <button id="primarySearchButton" class="btn btn-outline-success my-2 my-sm-0">Search</button>
+            @*</form>*@
         </div>
     </div>
     <div class="container body-content">

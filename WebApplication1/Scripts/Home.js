@@ -1,12 +1,6 @@
 ﻿$(document).ready(function ()
 {
-	//hljs.configure({ useBR: true });
-	//$('pre code').each(function (i, block) {
-	//    hljs.highlightBlock(block);
-	//});
-
 	var content = $.ajax({ url: "/Home/GetAllEntityName", async: false });
-
 	var jsonObj = eval('(' + content.responseText + ')');
 	var entities = jsonObj.Entities;
 	var entityArray = [];
@@ -47,25 +41,6 @@
 		};
 	};
 
-
-	// Defining the local dataset
-	//var nbaTeams = new Bloodhound({
-	//	datumTokenizer: Bloodhound.tokenizers.obj.whitespace('team'),
-	//	queryTokenizer: Bloodhound.tokenizers.whitespace,
-	//	//remote: '/Home/GetAllEntityName?',
-	//	prefetch: entities
-	//});
-
-	//var nhlTeams = new Bloodhound({
-	//	datumTokenizer: Bloodhound.tokenizers.obj.whitespace('team'),
-	//	queryTokenizer: Bloodhound.tokenizers.whitespace,
-	//	//remote: '/Home/GetAllEntityName?',
-	//	prefetch: entities
-	//});
-
-	//nbaTeams.initialize();
-	//nhlTeams.initialize();
-
 	$('#multiple-datasets .typeahead').typeahead({
 		highlight: true
 	},
@@ -92,9 +67,15 @@
 		{
 			var entityName = $('#Search')[0].value;
 			GetEntityByName(entityName);
-			//drawCode(entityName);
 		}
 	});
+
+	$("#primarySearchButton").click(function()
+	{
+	    var entityName = $('#Search')[0].value;
+	    GetEntityByName(entityName);
+	})
+
 
 	function GetEntityByName(name)
 	{
@@ -106,7 +87,6 @@
 			{
 				$("#TableContent").html(data);
 				hljs.configure({ useBR: false });
-				//hljs.configure({ useBR: true });
 				$('pre code').each(function (i, block)
 				{
 					hljs.highlightBlock(block);
