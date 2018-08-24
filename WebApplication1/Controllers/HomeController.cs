@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -8,23 +9,22 @@ using System.Xml;
 using Newtonsoft.Json;
 using WebApplication1.Models;
 using static WebApplication1.Models.Entity;
-using System.Configuration;
 
 namespace WebApplication1.Controllers
 {
 	public class HomeController : Controller
 	{
-        private static string _xmlPath;
+		private static string _xmlPath;
 
 
-        public ActionResult Index()
+		public ActionResult Index()
 		{
-            string xmlPath  = ConfigurationManager.AppSettings["XmlPath"];
-            if(!string.IsNullOrEmpty(xmlPath))
-            {
-                _xmlPath = xmlPath;
-            }
-            return View(new Entity());
+			string xmlPath = ConfigurationManager.AppSettings["XmlPath"];
+			if (!string.IsNullOrEmpty(xmlPath))
+			{
+				_xmlPath = xmlPath;
+			}
+			return View(new Entity());
 		}
 
 		public ActionResult ShowEntity(string name)
@@ -86,6 +86,8 @@ namespace WebApplication1.Controllers
 			result.XmlString = result.XmlString.Replace("<Enumeration", ">\r\n   <Enumeration").Trim();
 			result.XmlString = result.XmlString.Replace("<LoadOption", ">\r\n   <LoadOption").Trim();
 			result.XmlString = result.XmlString.Replace("<Value", ">\r\n      <Value").Trim();
+			//result.XmlString = result.XmlString.Replace("<AliasProperty", ">\r\n       <AliasProperty").Trim();
+			result.XmlString = result.XmlString.Replace("<CustomDataShapes", ">\r\n   <CustomDataShapes").Trim();
 			return this.PartialView("SearchResult", result);
 		}
 
