@@ -155,3 +155,7 @@ p + p {
 #rtl-support .tt-menu {
   text-align: right;
 }
+
+.keyWord{
+	background-color:orange;
+}

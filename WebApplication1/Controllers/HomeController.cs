@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Script.Serialization;
 using System.Xml;
 using Newtonsoft.Json;
+using WebApplication1.Helper;
 using WebApplication1.Models;
 using static WebApplication1.Models.Entity;
 
@@ -80,22 +82,19 @@ namespace WebApplication1.Controllers
 
 		public ActionResult SearchResult(string name)
 		{
-			var result = Entities.EntityList.Entities.Where(o => o.Name == name).FirstOrDefault();
-			result.XmlString = result.XmlString.Replace("><Field", ">\r\n   <Field").Trim();
-			result.XmlString = result.XmlString.Replace("</Entity>", "\r\n </Entity>").Trim();
-			result.XmlString = result.XmlString.Replace("<Enumeration", ">\r\n   <Enumeration").Trim();
-			result.XmlString = result.XmlString.Replace("<LoadOption", ">\r\n   <LoadOption").Trim();
-			result.XmlString = result.XmlString.Replace("<Value", ">\r\n      <Value").Trim();
-			//result.XmlString = result.XmlString.Replace("<AliasProperty", ">\r\n       <AliasProperty").Trim();
-			result.XmlString = result.XmlString.Replace("<CustomDataShapes", ">\r\n   <CustomDataShapes").Trim();
-			return this.PartialView("SearchResult", result);
-		}
+			var result = Entities.EntityList.Entities.Where(o => o.Name.ToLower() == name.ToLower() || (o.Fields != null && o.Fields.Count(f => f.Name.ToLower() == name.ToLower()) > 0));
+			foreach (Entity entity in result)
+			{
+				entity.XmlString = entity.XmlString.Replace("><Field", ">\r\n   <Field").Trim();
+				entity.XmlString = entity.XmlString.Replace("</Entity>", "\r\n </Entity>").Trim();
+				entity.XmlString = entity.XmlString.Replace("<Enumeration", ">\r\n   <Enumeration").Trim();
+				entity.XmlString = entity.XmlString.Replace("<LoadOption", ">\r\n   <LoadOption").Trim();
+				entity.XmlString = entity.XmlString.Replace("<Value", ">\r\n      <Value").Trim();
+				//result.XmlString = result.XmlString.Replace("<AliasProperty", ">\r\n       <AliasProperty").Trim();
+				entity.XmlString = entity.XmlString.Replace("<CustomDataShapes", ">\r\n   <CustomDataShapes").Trim();
+			}
 
-		public string returnXmlString(string name)
-		{
-			var result = Entities.EntityList.Entities.Where(o => o.Name == name).FirstOrDefault();
-			string resultStringWithoutNewLine = result.XmlString;
-			return resultStringWithoutNewLine.Replace("</", "/br</");
+			return this.PartialView("SearchResult", result);
 		}
 	}
 }

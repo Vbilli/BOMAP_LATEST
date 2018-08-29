@@ -198,6 +198,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helper\SqlHelper.cs" />
     <Compile Include="Models\Entities.cs" />
     <Compile Include="Models\Entity.cs" />
     <Compile Include="Models\EntityCollection.cs" />
@@ -209,8 +210,11 @@
     <Content Include="Content\bootstrap-reboot.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\github-gist.css" />
+    <Content Include="Content\github.css" />
     <Content Include="Content\TypeAhead.css" />
     <Content Include="Content\Home.css" />
+    <Content Include="Content\vs2015.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />

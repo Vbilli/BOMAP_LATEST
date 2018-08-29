@@ -1,43 +1,16 @@
-﻿@model WebApplication1.Models.Entity
-@*<table class="table">
-    <thead>
-        <tr>
-            @if (Model.Fields != null && Model.Fields.Count > 0)
-            {
-                foreach (var field in Model.EntityChildAttributeList)
-                {
-                    <th scope="col">@field</th>
-                }
-            }
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var field in Model.Fields)
-        {
+﻿@using WebApplication1.Models
+@model IEnumerable<Entity>
 
-        }
-        <tr>
-            <th scope="row">1</th>
-            <td>Mark</td>
-            <td>Otto</td>
-            <td>mdo</td>
-        </tr>
-        <tr>
-            <th scope="row">2</th>
-            <td>Jacob</td>
-            <td>Thornton</td>
-            <td>fat</td>
-        </tr>
-        <tr>
-            <th scope="row">3</th>
-            <td>Larry</td>
-            <td>the Bird</td>
-            <td>twitter</td>
-        </tr>
-    </tbody>
-</table>*@
-
-@if (Model.Fields != null && Model.Fields.Count > 0)
-{
-    <pre><code class="xml"> @Model.XmlString</code></pre>
+@{
+	if (Model.Count() > 0)
+	{
+		foreach (Entity entity in Model)
+		{
+			if (entity.Fields != null && entity.Fields.Count > 0)
+			{
+				@Html.DisplayTextFor(o => entity.Name)
+				<pre><code class="xml"> @entity.XmlString</code></pre>
 			}
+		}
+	}
+}

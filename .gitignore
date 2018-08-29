@@ -241,3 +241,4 @@ ModelManifest.xml
 # FAKE - F# Make
 .fake/
 /WebApplication1/Properties/PublishProfiles/Finder.pubxml
+/WebApplication1/Helper/SqlHelper.cs

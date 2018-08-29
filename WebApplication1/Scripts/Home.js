@@ -70,10 +70,10 @@
 		}
 	});
 
-	$("#primarySearchButton").click(function()
+	$("#primarySearchButton").click(function ()
 	{
-	    var entityName = $('#Search')[0].value;
-	    GetEntityByName(entityName);
+		var entityName = $('#Search')[0].value;
+		GetEntityByName(entityName);
 	})
 
 
@@ -91,7 +91,19 @@
 				{
 					hljs.highlightBlock(block);
 				});
+				hightLightKeyWords(name);
 			}
 		});
+	};
+
+	function hightLightKeyWords(keyWord)
+	{
+		$('.hljs-string').each(function ()
+		{
+			if ($(this)[0].innerText == '"' + keyWord + '"')
+			{
+				$(this).addClass("keyWord");
+			}
+		})
 	};
 });
