@@ -1,0 +1,33 @@
+﻿@using WebApplication1.Models
+@model Table
+
+
+<table class="table table-hover">
+	<thead class="thead-dark">
+		<tr>
+			<th scope="col">#</th>
+			<th scope="col">Name</th>
+			<th scope="col">Data Type</th>
+			<th scope="col">IsNullable</th>
+			<th scope="col">Number Precision</th>
+
+		</tr>
+	</thead>
+	<tbody>
+		
+			@if (Model.Columns.Count > 0)
+			{
+				for (int i = 0; i < Model.Columns.Count; i++)
+				{
+					<tr>
+						<th scope="row">@i</th>
+						<td>@Model.Columns[i].Name</td>
+						<td>@Model.Columns[i].DataType</td>
+						<td>@Model.Columns[i].IsNullable</td>
+						<td>@Model.Columns[i].NumberPrecision</td>
+					
+					</tr>
+				}
+			}
+	</tbody>
+</table>

@@ -37,6 +37,7 @@ namespace WebApplication1.Helper
 				SqlDataAdapter adapter = new SqlDataAdapter();
 				adapter.SelectCommand = new SqlCommand(
 					queryString, connection);
+				connection.Open();
 				adapter.Fill(dataset);
 				return dataset;
 			}

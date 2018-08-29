@@ -1,11 +1,22 @@
 ﻿$(document).ready(function ()
 {
-	var content = $.ajax({ url: "/Home/GetAllEntityName", async: false });
-	var jsonObj = eval('(' + content.responseText + ')');
+	var AllEntities = $.ajax({ url: "/Home/GetAllEntityName", async: false });
+	var jsonObj = eval('(' + AllEntities.responseText + ')');
 	var entities = jsonObj.Entities;
 	var entityArray = [];
 	var fieldArray = [];
 	var returnSearch;
+
+	var AllTables = $.ajax({ url: "/Home/GetAllTableName", async: false });
+	var jsonTable = eval('(' + AllTables.responseText + ')');
+	var tables = jsonTable.TableList;
+	var tableArray = [];
+
+	for (i = 0; i < tables.length; i++)
+	{
+		var entity = tables[i];
+		tableArray.push(entity.Name)
+	}
 
 	for (i = 0; i < entities.length; i++)
 	{
@@ -17,7 +28,6 @@
 		{
 			fieldArray.push(fields[y].FieldProperties[0].PropertyValue);
 		}
-
 	}
 
 	var substringMatcher = function (strs)
@@ -40,6 +50,17 @@
 			cb(matches);
 		};
 	};
+
+	$('#the-basics .typeahead').typeahead({
+		hint: true,
+		highlight: true,
+		minLength: 1
+	},
+{
+	name: 'Table',
+	display: 'value',
+	source: substringMatcher(tableArray)
+});
 
 	$('#multiple-datasets .typeahead').typeahead({
 		highlight: true
@@ -67,6 +88,15 @@
 		{
 			var entityName = $('#Search')[0].value;
 			GetEntityByName(entityName);
+		}
+	});
+
+	$("#SearchTable").keyup(function (event)
+	{
+		if (event.keyCode === 13)
+		{
+			var entityName = $('#SearchTable')[0].value;
+			GetTableInfo(entityName);
 		}
 	});
 
@@ -106,4 +136,24 @@
 			}
 		})
 	};
+
+	function GetTableInfo(tableName)
+	{
+		$.ajax({
+			url: "/Home/TableSearchResult",
+			data: { tableName: tableName },
+			async: false,
+			success: function (data)
+			{
+				$("#TableContent").html(data);
+				hightLightKeyWords(tableName);
+				//hljs.configure({ useBR: false });
+				//$('pre code').each(function (i, block)
+				//{
+				//	hljs.highlightBlock(block);
+				//});
+				//hightLightKeyWords(name);
+			}
+		});
+	}
 });

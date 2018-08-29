@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -95,6 +96,51 @@ namespace WebApplication1.Controllers
 			}
 
 			return this.PartialView("SearchResult", result);
+		}
+
+		public ActionResult TableSearchResult(string tableName)
+		{
+			DataSet dsTables = new DataSet();
+			SqlHelper.SelectRows(dsTables, string.Format("select * from  INFORMATION_SCHEMA.COLUMNS WHERE INFORMATION_SCHEMA.COLUMNS.TABLE_NAME = '{0}'", tableName));
+			if (dsTables.Tables.Count > 0 && dsTables.Tables[0].Rows.Count > 0)
+			{
+				Table table = new Table(dsTables.Tables[0].Rows[0].ItemArray[2].ToString());
+				foreach (DataRow dr in dsTables.Tables[0].Rows)
+				{
+					Column column = new Column()
+					{
+						Name = dr.ItemArray[3].ToString(),
+						DataType = dr.ItemArray[7].ToString(),
+						IsNullable = dr.ItemArray[6].ToString() == "YES" ? true : false,
+						NumberPrecision = dr.ItemArray[10].ToString()
+					};
+					table.Columns.Add(column);
+				}
+				return this.PartialView("TableSearchResult", table);
+			}
+			return null;
+		}
+
+		[HttpGet]
+		public string GetAllTableName()
+		{
+			DataSet dsTables = new DataSet();
+			IList<string> tableList = new List<string>();
+			SqlHelper.SelectRows(dsTables, "SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE='BASE TABLE'");
+			TableCollection tables = new TableCollection();
+			if (dsTables.Tables.Count > 0 && dsTables.Tables[0].Rows.Count > 0)
+			{
+				foreach (DataRow dr in dsTables.Tables[0].Rows)
+				{
+					string tableName = dr.ItemArray[2].ToString();
+					if (!tableName.StartsWith("x_"))
+					{
+						Table table = new Table(tableName);
+						tables.TableList.Add(table);
+					}
+				}
+			}
+			return JsonConvert.SerializeObject(tables);
 		}
 	}
 }
