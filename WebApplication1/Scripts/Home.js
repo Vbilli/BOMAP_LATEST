@@ -1,12 +1,7 @@
 ﻿$(document).ready(function ()
 {
-	var AllEntities = $.ajax({ url: "/Home/GetAllEntityName", async: false });
-	var jsonObj = eval('(' + AllEntities.responseText + ')');
-	var entities = jsonObj.Entities;
-	var entityArray = [];
-	var fieldArray = [];
-	var returnSearch;
-
+	var history = [];
+	var historyIndex = 0;
 	var AllTables = $.ajax({ url: "/Home/GetAllTableName", async: false });
 	var jsonTable = eval('(' + AllTables.responseText + ')');
 	var tables = jsonTable.TableList;
@@ -17,6 +12,12 @@
 		var entity = tables[i];
 		tableArray.push(entity.Name)
 	}
+
+	var AllEntities = $.ajax({ url: "/Home/GetAllEntityName", async: false });
+	var jsonObj = eval('(' + AllEntities.responseText + ')');
+	var entities = jsonObj.Entities;
+	var entityArray = [];
+	var fieldArray = [];
 
 	for (i = 0; i < entities.length; i++)
 	{
@@ -50,6 +51,27 @@
 			cb(matches);
 		};
 	};
+
+	document.getElementById("backToPreviouslySearch").addEventListener("click", function ()
+	{
+		if (historyIndex > 1)
+		{
+			historyIndex--;
+			$("#SearchTable")[0].value = history[historyIndex - 1];
+			GetTableInfo(history[historyIndex - 1], false)
+		}
+
+	});
+
+	document.getElementById("backToLaterSearch").addEventListener("click", function ()
+	{
+		if (historyIndex < history.length)
+		{
+			historyIndex++;
+			$("#SearchTable")[0].value = history[historyIndex - 1];
+			GetTableInfo(history[historyIndex - 1], false)
+		}
+	});
 
 	$('#the-basics .typeahead').typeahead({
 		hint: true,
@@ -96,7 +118,7 @@
 		if (event.keyCode === 13)
 		{
 			var entityName = $('#SearchTable')[0].value;
-			GetTableInfo(entityName);
+			GetTableInfo(entityName, true);
 		}
 	});
 
@@ -122,6 +144,7 @@
 					hljs.highlightBlock(block);
 				});
 				hightLightKeyWords(name);
+				HideHistoryNavigationButton();
 			}
 		});
 	};
@@ -137,7 +160,7 @@
 		})
 	};
 
-	function GetTableInfo(tableName)
+	GetTableInfo = function (tableName, writeToHistory)
 	{
 		$.ajax({
 			url: "/Home/TableSearchResult",
@@ -147,13 +170,31 @@
 			{
 				$("#TableContent").html(data);
 				hightLightKeyWords(tableName);
-				//hljs.configure({ useBR: false });
-				//$('pre code').each(function (i, block)
-				//{
-				//	hljs.highlightBlock(block);
-				//});
-				//hightLightKeyWords(name);
+				$("#SearchTable")[0].value = tableName;
+				if (writeToHistory)
+				{
+					history.push(tableName);
+					historyIndex = history.length;
+				}
+				ShowHistoryNavigationButton();
 			}
 		});
-	}
+	};
+
+	function ShowHistoryNavigationButton()
+	{
+		$('#HistoryNavigator').each(function ()
+		{
+			$(this).removeClass("HiddenDiv");
+		})
+	};
+
+	function HideHistoryNavigationButton()
+	{
+		$('#HistoryNavigator').each(function ()
+		{
+			$(this).addClass("HiddenDiv");
+		})
+	};
 });
+

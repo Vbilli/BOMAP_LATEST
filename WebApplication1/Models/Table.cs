@@ -27,11 +27,6 @@ namespace WebApplication1.Models
 
 	public class Column
 	{
-		public Column()
-		{
-			this.ForeignKeys = new List<ForeignKey>();
-		}
-
 		public string Name { get; set; }
 		public string DataType { get; set; }
 
@@ -39,7 +34,7 @@ namespace WebApplication1.Models
 
 		public string NumberPrecision { get; set; }
 
-		public IList<ForeignKey> ForeignKeys { get; set; }
+		public ForeignKey ForeignKeys { get; set; }
 	}
 
 	public class ForeignKey

@@ -1,7 +1,6 @@
 ﻿@using WebApplication1.Models
 @model Table
 
-
 <table class="table table-hover">
 	<thead class="thead-dark">
 		<tr>
@@ -10,6 +9,8 @@
 			<th scope="col">Data Type</th>
 			<th scope="col">IsNullable</th>
 			<th scope="col">Number Precision</th>
+			<th scope="col">FK_Table</th>
+			<th scope="col">FK_Column</th>
 
 		</tr>
 	</thead>
@@ -25,7 +26,18 @@
 						<td>@Model.Columns[i].DataType</td>
 						<td>@Model.Columns[i].IsNullable</td>
 						<td>@Model.Columns[i].NumberPrecision</td>
-					
+						@if (Model.Columns[i].ForeignKeys != null)
+						{
+							<td><a href="javascript:void(0);" onclick="GetTableInfo('@Model.Columns[i].ForeignKeys.FKTable',true);">@Model.Columns[i].ForeignKeys.FKTable</a>
+								
+								</td>
+							<td>@Model.Columns[i].ForeignKeys.FKColumn</td>
+						}
+						else
+						{
+							<td></td>
+							<td></td>
+						}
 					</tr>
 				}
 			}

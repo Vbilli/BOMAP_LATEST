@@ -18,7 +18,7 @@ namespace WebApplication1.Controllers
 	public class HomeController : Controller
 	{
 		private static string _xmlPath;
-
+		private static string _queryFkConstraintSql = "SELECT FK_Table = FK.TABLE_NAME, FK_Column = CU.COLUMN_NAME, PK_Table = PK.TABLE_NAME, PK_Column = PT.COLUMN_NAME, Constraint_Name = C.CONSTRAINT_NAME FROM INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS C INNER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS FK ON C.CONSTRAINT_NAME = FK.CONSTRAINT_NAME INNER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS PK ON C.UNIQUE_CONSTRAINT_NAME = PK.CONSTRAINT_NAME INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE CU ON C.CONSTRAINT_NAME = CU.CONSTRAINT_NAME INNER JOIN(SELECT i1.TABLE_NAME, i2.COLUMN_NAME FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS i1 INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE i2 ON i1.CONSTRAINT_NAME = i2.CONSTRAINT_NAME WHERE i1.CONSTRAINT_TYPE = 'PRIMARY KEY') PT ON PT.TABLE_NAME = PK.TABLE_NAME ";
 
 		public ActionResult Index()
 		{
@@ -101,12 +101,15 @@ namespace WebApplication1.Controllers
 		public ActionResult TableSearchResult(string tableName)
 		{
 			DataSet dsTables = new DataSet();
+			DataSet dsColumns = new DataSet();
 			SqlHelper.SelectRows(dsTables, string.Format("select * from  INFORMATION_SCHEMA.COLUMNS WHERE INFORMATION_SCHEMA.COLUMNS.TABLE_NAME = '{0}'", tableName));
+			SqlHelper.SelectRows(dsColumns, _queryFkConstraintSql + string.Format(" where FK.TABLE_NAME = '{0}'", tableName.Trim()));
 			if (dsTables.Tables.Count > 0 && dsTables.Tables[0].Rows.Count > 0)
 			{
 				Table table = new Table(dsTables.Tables[0].Rows[0].ItemArray[2].ToString());
 				foreach (DataRow dr in dsTables.Tables[0].Rows)
 				{
+					string columnName = dr.ItemArray[3].ToString();
 					Column column = new Column()
 					{
 						Name = dr.ItemArray[3].ToString(),
@@ -114,6 +117,22 @@ namespace WebApplication1.Controllers
 						IsNullable = dr.ItemArray[6].ToString() == "YES" ? true : false,
 						NumberPrecision = dr.ItemArray[10].ToString()
 					};
+					if (dsColumns.Tables.Count > 0 && dsColumns.Tables[0].Rows.Count > 0)
+					{
+						foreach (DataRow FK_column in dsColumns.Tables[0].Rows)
+						{
+							if (FK_column.ItemArray[1].ToString() == columnName)
+							{
+								ForeignKey fk = new ForeignKey()
+								{
+									Name = FK_column.ItemArray[4].ToString(),
+									FKTable = FK_column.ItemArray[2].ToString(),
+									FKColumn = FK_column.ItemArray[3].ToString()
+								};
+								column.ForeignKeys = fk;
+							}
+						}
+					}
 					table.Columns.Add(column);
 				}
 				return this.PartialView("TableSearchResult", table);

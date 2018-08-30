@@ -159,3 +159,12 @@ p + p {
 .keyWord{
 	background-color:orange;
 }
+
+.HistoryButton{
+	float:left;
+	height:30px;
+}
+
+.HiddenDiv{
+	display:none;
+}
