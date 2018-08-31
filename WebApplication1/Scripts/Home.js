@@ -104,6 +104,16 @@
 		}
 	});
 
+	$('#the-basics .typeahead').bind('typeahead:select', function (ev, suggestion)
+	{
+		GetTableInfo(suggestion.value, true);
+	});
+
+	$('#multiple-datasets .typeahead').bind('typeahead:select', function (ev, suggestion)
+	{
+		GetEntityByName(suggestion.value);
+	});
+
 	$("#Search").keyup(function (event)
 	{
 		if (event.keyCode === 13)
