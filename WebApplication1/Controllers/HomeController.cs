@@ -1,24 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
-using System.Data.SqlClient;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using System.Web.Script.Serialization;
 using System.Xml;
 using Newtonsoft.Json;
 using WebApplication1.Helper;
 using WebApplication1.Models;
-using static WebApplication1.Models.Entity;
 
 namespace WebApplication1.Controllers
 {
 	public class HomeController : Controller
 	{
 		private static string _xmlPath;
-		private static string _queryFkConstraintSql = "SELECT FK_Table = FK.TABLE_NAME, FK_Column = CU.COLUMN_NAME, PK_Table = PK.TABLE_NAME, PK_Column = PT.COLUMN_NAME, Constraint_Name = C.CONSTRAINT_NAME FROM INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS C INNER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS FK ON C.CONSTRAINT_NAME = FK.CONSTRAINT_NAME INNER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS PK ON C.UNIQUE_CONSTRAINT_NAME = PK.CONSTRAINT_NAME INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE CU ON C.CONSTRAINT_NAME = CU.CONSTRAINT_NAME INNER JOIN(SELECT i1.TABLE_NAME, i2.COLUMN_NAME FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS i1 INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE i2 ON i1.CONSTRAINT_NAME = i2.CONSTRAINT_NAME WHERE i1.CONSTRAINT_TYPE = 'PRIMARY KEY') PT ON PT.TABLE_NAME = PK.TABLE_NAME ";
+		private static readonly string _queryFkConstraintSql = "SELECT FK_Table = FK.TABLE_NAME, FK_Column = CU.COLUMN_NAME, PK_Table = PK.TABLE_NAME, PK_Column = PT.COLUMN_NAME, Constraint_Name = C.CONSTRAINT_NAME FROM INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS C INNER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS FK ON C.CONSTRAINT_NAME = FK.CONSTRAINT_NAME INNER JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS PK ON C.UNIQUE_CONSTRAINT_NAME = PK.CONSTRAINT_NAME INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE CU ON C.CONSTRAINT_NAME = CU.CONSTRAINT_NAME INNER JOIN(SELECT i1.TABLE_NAME, i2.COLUMN_NAME FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS i1 INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE i2 ON i1.CONSTRAINT_NAME = i2.CONSTRAINT_NAME WHERE i1.CONSTRAINT_TYPE = 'PRIMARY KEY') PT ON PT.TABLE_NAME = PK.TABLE_NAME ";
 
 		public ActionResult Index()
 		{
@@ -32,7 +27,7 @@ namespace WebApplication1.Controllers
 
 		public ActionResult ShowEntity(string name)
 		{
-			return this.View(Entities.EntityList.Entities.Where(o => o.Name == name).FirstOrDefault());
+			return View(Entities.EntityList.Entities.Where(o => o.Name == name).FirstOrDefault());
 		}
 
 		[HttpGet]
@@ -49,9 +44,11 @@ namespace WebApplication1.Controllers
 			{
 				XmlAttributeCollection collections = node.Attributes;
 				//entityList.Add(collections["Name"].Value);
-				Entity entity = new Entity();
-				entity.Name = collections["Name"].Value;
-				entity.XmlString = node.OuterXml;
+				Entity entity = new Entity
+				{
+					Name = collections["Name"].Value,
+					XmlString = node.OuterXml
+				};
 				if (node.HasChildNodes)
 				{
 					XmlNodeList childNodes = node.ChildNodes;
@@ -83,7 +80,7 @@ namespace WebApplication1.Controllers
 
 		public ActionResult SearchResult(string name)
 		{
-			var result = Entities.EntityList.Entities.Where(o => o.Name.ToLower() == name.ToLower() || (o.Fields != null && o.Fields.Count(f => f.Name.ToLower() == name.ToLower()) > 0));
+			IEnumerable<Entity> result = Entities.EntityList.Entities.Where(o => o.Name.ToLower() == name.ToLower() || (o.Fields != null && o.Fields.Count(f => f.Name.ToLower() == name.ToLower()) > 0));
 			foreach (Entity entity in result)
 			{
 				entity.XmlString = entity.XmlString.Replace("><Field", ">\r\n   <Field").Trim();
@@ -95,7 +92,7 @@ namespace WebApplication1.Controllers
 				entity.XmlString = entity.XmlString.Replace("<CustomDataShapes", ">\r\n   <CustomDataShapes").Trim();
 			}
 
-			return this.PartialView("SearchResult", result);
+			return PartialView("SearchResult", result);
 		}
 
 		public ActionResult TableSearchResult(string tableName)
@@ -135,7 +132,7 @@ namespace WebApplication1.Controllers
 					}
 					table.Columns.Add(column);
 				}
-				return this.PartialView("TableSearchResult", table);
+				return PartialView("TableSearchResult", table);
 			}
 			return null;
 		}

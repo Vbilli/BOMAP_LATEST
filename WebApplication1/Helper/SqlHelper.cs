@@ -17,26 +17,26 @@ EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED
 WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE. 
 \***************************************************************************/
 
-using System;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
-using System.Threading.Tasks;
 
 namespace WebApplication1.Helper
 {
 	public static class SqlHelper
 	{
-		private static string connectionString = ConfigurationManager.ConnectionStrings["Autotask"].ConnectionString;
+		private static readonly string connectionString = ConfigurationManager.ConnectionStrings["Autotask"].ConnectionString;
 
 		public static DataSet SelectRows(DataSet dataset, string queryString)
 		{
 			using (SqlConnection connection =
 				new SqlConnection(connectionString))
 			{
-				SqlDataAdapter adapter = new SqlDataAdapter();
-				adapter.SelectCommand = new SqlCommand(
-					queryString, connection);
+				SqlDataAdapter adapter = new SqlDataAdapter
+				{
+					SelectCommand = new SqlCommand(
+					queryString, connection)
+				};
 				connection.Open();
 				adapter.Fill(dataset);
 				return dataset;
@@ -46,7 +46,7 @@ namespace WebApplication1.Helper
 		/// <summary> 
 		/// Set the connection, command, and then execute the command with non query. 
 		/// </summary> 
-		public static Int32 ExecuteNonQuery(String commandText,
+		public static int ExecuteNonQuery(string commandText,
 			CommandType commandType, params SqlParameter[] parameters)
 		{
 			using (SqlConnection conn = new SqlConnection(connectionString))
@@ -67,7 +67,7 @@ namespace WebApplication1.Helper
 		/// <summary> 
 		/// Set the connection, command, and then execute the command and only return one value. 
 		/// </summary> 
-		public static Object ExecuteScalar(String commandText,
+		public static object ExecuteScalar(string commandText,
 			CommandType commandType, params SqlParameter[] parameters)
 		{
 			using (SqlConnection conn = new SqlConnection(connectionString))
@@ -86,7 +86,7 @@ namespace WebApplication1.Helper
 		/// <summary> 
 		/// Set the connection, command, and then execute the command with query and return the reader. 
 		/// </summary> 
-		public static SqlDataReader ExecuteReader(String commandText,
+		public static SqlDataReader ExecuteReader(string commandText,
 			CommandType commandType, params SqlParameter[] parameters)
 		{
 			SqlConnection conn = new SqlConnection(connectionString);
